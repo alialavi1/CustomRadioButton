@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.FontMetrics;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -142,6 +144,14 @@ public class CustomerRangeBar extends View {
 	 * 控件的默认高度
 	 */
 	private float mDefaultHeight;
+
+	private Paint mTickCirclePaint = new Paint();
+	private Paint mTickInnerCirclePaint = new Paint();
+	private Paint mTickTextPaint = new Paint();
+	private Paint mBaseLinePaint = new Paint();
+	private Paint mThumbCirclePaint = new Paint();
+	private Paint mThumbInnerCirclePaint = new Paint();
+	private Paint mThumbOuterCirclePaint = new Paint();
 
 	public float getThumbOuterCircleWidth() {
 		return mThumbOuterCircleWidth;
@@ -302,12 +312,14 @@ public class CustomerRangeBar extends View {
 
 	public CustomerRangeBar(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		rangeBarInit(context, attrs);
 
 	}
 
 	public CustomerRangeBar(Context context, AttributeSet attrs,
 			int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
+		rangeBarInit(context, attrs);
 
 	}
 
@@ -367,12 +379,148 @@ public class CustomerRangeBar extends View {
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+		int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+		int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+
+		int measureWidth = MeasureSpec.getSize(widthMeasureSpec);
+		int measureHeight = MeasureSpec.getSize(heightMeasureSpec);
+
+		int width = 0;
+		int height = 0;
+
+		if (widthMode == MeasureSpec.EXACTLY) {
+			width = measureWidth;
+		} else {
+			width = (int) mDefaultWidth;
+		}
+
+		if (heightMode == MeasureSpec.EXACTLY) {
+			height = Math.max(measureHeight,
+					Math.round(calculateDefaultHeight() + 0.5f));
+		} else {
+			height = Math.round(calculateDefaultHeight() + 0.5f);
+		}
+
+		width = width + getPaddingLeft() + getPaddingRight();
+		height = height + getPaddingTop() + getPaddingBottom();
+		setMeasuredDimension(width, height);
+	}
+
+	/**
+	 * 得到字体所占的高度
+	 * 
+	 * @return
+	 */
+	private int getFontHeight() {
+		Paint paint = new Paint();
+		paint.setTextSize(mTickTextSize);
+		FontMetrics fontMetrics = paint.getFontMetrics();
+		return (int) Math.ceil(fontMetrics.descent - fontMetrics.ascent);
+	}
+
+	/**
+	 * 计算默认高度
+	 * 
+	 * @return
+	 */
+	private float calculateDefaultHeight() {
+		return getFontHeight()
+				+ (getDp(DEFAULT_THUMB_CIRCLE_RADIUS_DP
+						+ DEFAULT_THUMB_INNER_CIRCLE_WIDTH_DP
+						+ DEFAULT_THUMB_OUTER_CIRCLE_WIDTH_DP)) * 2 + getDp(10);
+
+	}
+
+	private float getDp(float value) {
+		return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value,
+				getResources().getDisplayMetrics());
 	}
 
 	@Override
 	protected void onDraw(Canvas canvas) {
 		// TODO Auto-generated method stub
 		super.onDraw(canvas);
-	}
+		float length = getWidth() - getPaddingLeft() - getPaddingRight() - 2
+				* mThumbCircleRadius - 2 * mThumbInnerCircleWidth - 2
+				* mThumbOuterCircleWidth;
+		float len = length / mTickCount;
 
+		mThumbOuterCirclePaint = new Paint();
+		mThumbOuterCirclePaint.setDither(true);
+		mThumbOuterCirclePaint.setAntiAlias(true);
+		mThumbOuterCirclePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+		mThumbOuterCirclePaint.setStyle(Paint.Style.FILL);
+		mThumbOuterCirclePaint.setColor(Color.WHITE);
+
+		mThumbInnerCirclePaint = new Paint();
+		mThumbInnerCirclePaint.setDither(true);
+		mThumbInnerCirclePaint.setAntiAlias(true);
+		mThumbInnerCirclePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+		mThumbInnerCirclePaint.setStyle(Paint.Style.FILL);
+		mThumbInnerCirclePaint.setColor(Color.BLUE);
+
+		mThumbCirclePaint = new Paint();
+		mThumbCirclePaint.setDither(true);
+		mThumbCirclePaint.setAntiAlias(true);
+		mThumbCirclePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+		mThumbCirclePaint.setStyle(Paint.Style.FILL);
+		mThumbCirclePaint.setColor(Color.RED);
+
+		mTickTextPaint = new Paint();
+		mTickTextPaint.setDither(true);
+		mTickTextPaint.setAntiAlias(true);
+		mTickTextPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+		mTickTextPaint.setColor(Color.WHITE);
+		mTickTextPaint.setTextSize(mTickTextSize);
+
+		mBaseLinePaint = new Paint();
+		mBaseLinePaint.setDither(true);
+		mBaseLinePaint.setAntiAlias(true);
+		mBaseLinePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+		mBaseLinePaint.setStyle(Paint.Style.FILL);
+		mBaseLinePaint.setColor(Color.WHITE);
+		mBaseLinePaint.setStrokeWidth(mBaseLineWeight);
+
+		for (int i = 0; i <= mTickCount; i++) {
+			if (i != mTickCount) {
+				canvas.drawLine(i * len + getPaddingLeft() + mThumbCircleRadius
+						+ mThumbInnerCircleWidth + mThumbOuterCircleWidth,
+						getFontHeight() + getDp(10) + mThumbCircleRadius
+								+ mThumbInnerCircleWidth
+								+ mThumbOuterCircleWidth, (i + 1) * len
+								+ getPaddingLeft() + mThumbCircleRadius
+								+ mThumbInnerCircleWidth
+								+ mThumbOuterCircleWidth, getFontHeight()
+								+ getDp(10) + mThumbCircleRadius
+								+ mThumbInnerCircleWidth
+								+ mThumbOuterCircleWidth, mBaseLinePaint);
+			}
+
+			canvas.drawCircle(i * len + getPaddingLeft() + mThumbCircleRadius
+					+ mThumbInnerCircleWidth + mThumbOuterCircleWidth,
+					getFontHeight() + getDp(10) + mThumbCircleRadius
+							+ mThumbInnerCircleWidth + mThumbOuterCircleWidth,
+					mThumbCircleRadius + mThumbInnerCircleWidth
+							+ mThumbOuterCircleWidth, mThumbOuterCirclePaint);
+			canvas.drawCircle(i * len + getPaddingLeft() + mThumbCircleRadius
+					+ mThumbInnerCircleWidth + mThumbOuterCircleWidth,
+					getFontHeight() + getDp(10) + mThumbCircleRadius
+							+ mThumbInnerCircleWidth + mThumbOuterCircleWidth,
+					mThumbCircleRadius + mThumbInnerCircleWidth,
+					mThumbInnerCirclePaint);
+			canvas.drawCircle(i * len + getPaddingLeft() + mThumbCircleRadius
+					+ mThumbInnerCircleWidth + mThumbOuterCircleWidth,
+					getFontHeight() + getDp(10) + mThumbCircleRadius
+							+ mThumbInnerCircleWidth + mThumbOuterCircleWidth,
+					mThumbCircleRadius, mThumbCirclePaint);
+
+			canvas.drawText("b", i * len + getPaddingLeft()
+					+ mThumbCircleRadius + mThumbInnerCircleWidth
+					+ mThumbOuterCircleWidth, getFontHeight() + getDp(5),
+					mTickTextPaint);
+
+		}
+
+	}
 }

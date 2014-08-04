@@ -1,11 +1,14 @@
 package com.puji.customerrangebar;
 
-public class Bar {
-	
-	
+import android.content.Context;
 
-	public Bar() {
-		
+public class Bar {
+
+	public Bar(Context ctx, float width, float paddingLeft, float paddingRight,
+			float thumbCircleRadius, float thumbInnerCircleWidth,
+			float thumbOuterCircleWidth, int tickCount, int barColor,
+			int tickCircleColor, int tickInnerCircleColor) {
+
 	}
 
 }
