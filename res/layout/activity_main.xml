@@ -5,8 +5,22 @@
     tools:context="com.puji.customerrangebar.MainActivity" >
 
     <com.puji.customerrangebar.CustomerRangeBar
+        android:id="@+id/rangerBar"
+        xmlns:custom="http://schemas.android.com/apk/res-auto"
+        android:layout_centerInParent="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" 
-        android:background="#000000"/>
+        custom:thumbOuterCircleColor="#008B45"
+        custom:thumbInnerCircleColor="#B3EE3A"
+        custom:thumbCircleColor="#96CDCD"
+        custom:tickOuterCircleColor="#8A2BE2"
+        custom:baseLineColor="#96CDCD"
+        custom:thumbCircleRadius="5dp"
+        custom:tickCircleColor="#87CEEB"
+        custom:tickTextNormalColor="#080808"
+        custom:tickTextSelectedColor="#006400"
+        android:background="#aaaaaa"
+      
+        />
 
 </RelativeLayout>

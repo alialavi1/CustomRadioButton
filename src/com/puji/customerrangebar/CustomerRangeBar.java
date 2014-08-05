@@ -1,5 +1,7 @@
 package com.puji.customerrangebar;
 
+import java.util.List;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -9,6 +11,7 @@ import android.graphics.Paint.FontMetrics;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 
 public class CustomerRangeBar extends View {
@@ -128,7 +131,7 @@ public class CustomerRangeBar extends View {
 	/**
 	 * 当前被选中刻度索引
 	 */
-	private int mTickIndex;
+	private int mTickIndex = 2;
 
 	/**
 	 * 刻度总数
@@ -145,13 +148,30 @@ public class CustomerRangeBar extends View {
 	 */
 	private float mDefaultHeight;
 
-	private Paint mTickCirclePaint = new Paint();
-	private Paint mTickInnerCirclePaint = new Paint();
-	private Paint mTickTextPaint = new Paint();
-	private Paint mBaseLinePaint = new Paint();
-	private Paint mThumbCirclePaint = new Paint();
-	private Paint mThumbInnerCirclePaint = new Paint();
-	private Paint mThumbOuterCirclePaint = new Paint();
+	private Bar mBar;
+
+	private Thumb mThumb;
+
+	private OnRangeBarChangeListener mListener;
+
+	private boolean mFirstSetTickCount = true;
+
+	private List<String> mData;
+
+	private int mBaseLineColor;
+
+	public void setData(List<String> data) {
+		mData = data;
+
+	}
+
+	public OnRangeBarChangeListener getmListener() {
+		return mListener;
+	}
+
+	public void setmListener(OnRangeBarChangeListener mListener) {
+		this.mListener = mListener;
+	}
 
 	public float getThumbOuterCircleWidth() {
 		return mThumbOuterCircleWidth;
@@ -159,6 +179,8 @@ public class CustomerRangeBar extends View {
 
 	public void setThumbOuterCircleWidth(float mThumbOuterCircleWidth) {
 		this.mThumbOuterCircleWidth = mThumbOuterCircleWidth;
+		createBar();
+		createThumb();
 	}
 
 	public int getThumbOuterCircleColor() {
@@ -167,6 +189,8 @@ public class CustomerRangeBar extends View {
 
 	public void setThumbOuterCircleColor(int mThumbOuterCircleColor) {
 		this.mThumbOuterCircleColor = mThumbOuterCircleColor;
+		createBar();
+		createThumb();
 	}
 
 	public float getThumbInnerCircleWidth() {
@@ -175,6 +199,8 @@ public class CustomerRangeBar extends View {
 
 	public void setThumbInnerCircleWidth(float mThumbInnerCircleWidth) {
 		this.mThumbInnerCircleWidth = mThumbInnerCircleWidth;
+		createBar();
+		createThumb();
 	}
 
 	public int getThumbInnerCircleColor() {
@@ -183,6 +209,8 @@ public class CustomerRangeBar extends View {
 
 	public void setThumbInnerCircleColor(int mThumbInnerCircleColor) {
 		this.mThumbInnerCircleColor = mThumbInnerCircleColor;
+		createBar();
+		createThumb();
 	}
 
 	public float getThumbCircleRadius() {
@@ -191,6 +219,8 @@ public class CustomerRangeBar extends View {
 
 	public void setThumbCircleRadius(float mThumbCircleRadius) {
 		this.mThumbCircleRadius = mThumbCircleRadius;
+		createBar();
+		createThumb();
 	}
 
 	public int getThumbCircleColor() {
@@ -199,14 +229,19 @@ public class CustomerRangeBar extends View {
 
 	public void setThumbCircleColor(int mThumbCircleColor) {
 		this.mThumbCircleColor = mThumbCircleColor;
+		createBar();
+		createThumb();
 	}
 
 	public float getTickCircleRadius() {
 		return mTickCircleRadius;
+
 	}
 
 	public void setTickCircleRadius(float mTickCircleRadius) {
 		this.mTickCircleRadius = mTickCircleRadius;
+		createBar();
+		createThumb();
 	}
 
 	public int getTickCircleColor() {
@@ -215,6 +250,8 @@ public class CustomerRangeBar extends View {
 
 	public void setTickCircleColor(int mTickCircleColor) {
 		this.mTickCircleColor = mTickCircleColor;
+		createBar();
+		createThumb();
 	}
 
 	public float getTickOuterCircleWidth() {
@@ -223,6 +260,8 @@ public class CustomerRangeBar extends View {
 
 	public void setTickOuterCircleWidth(float mTickOuterCircleWidth) {
 		this.mTickOuterCircleWidth = mTickOuterCircleWidth;
+		createBar();
+		createThumb();
 	}
 
 	public int getTickOuterCircleColor() {
@@ -231,6 +270,8 @@ public class CustomerRangeBar extends View {
 
 	public void setTickOuterCircleColor(int mTickOuterCircleColor) {
 		this.mTickOuterCircleColor = mTickOuterCircleColor;
+		createBar();
+		createThumb();
 	}
 
 	public float getBaseLineWeight() {
@@ -239,6 +280,8 @@ public class CustomerRangeBar extends View {
 
 	public void setBaseLineWeight(float mBaseLineWeight) {
 		this.mBaseLineWeight = mBaseLineWeight;
+		createBar();
+		createThumb();
 	}
 
 	public int getTickTextAlign() {
@@ -247,14 +290,19 @@ public class CustomerRangeBar extends View {
 
 	public void setTickTextAlign(int mTickTextAlign) {
 		this.mTickTextAlign = mTickTextAlign;
+		createBar();
+		createThumb();
 	}
 
 	public int getTickTextNormalColor() {
 		return mTickTextNormalColor;
+
 	}
 
 	public void setTickTextNormalColor(int mTickTextNormalColor) {
 		this.mTickTextNormalColor = mTickTextNormalColor;
+		createBar();
+		createThumb();
 	}
 
 	public int getTickTextSelectedColor() {
@@ -263,6 +311,8 @@ public class CustomerRangeBar extends View {
 
 	public void setTickTextSelectedColor(int mTickTextSelectedColor) {
 		this.mTickTextSelectedColor = mTickTextSelectedColor;
+		createBar();
+		createThumb();
 	}
 
 	public float getTickTextSize() {
@@ -271,6 +321,8 @@ public class CustomerRangeBar extends View {
 
 	public void setTickTextSize(float mTickTextSize) {
 		this.mTickTextSize = mTickTextSize;
+		createBar();
+		createThumb();
 	}
 
 	public int getTickIndex() {
@@ -279,14 +331,38 @@ public class CustomerRangeBar extends View {
 
 	public void setTickIndex(int mTickIndex) {
 		this.mTickIndex = mTickIndex;
+		createBar();
+		createThumb();
 	}
 
 	public int getTickCount() {
 		return mTickCount;
 	}
 
-	public void setTickCount(int mTickCount) {
-		this.mTickCount = mTickCount;
+	public void setTickCount(int tickCount) {
+		if (isValidTickCount(tickCount)) {
+			this.mTickCount = tickCount;
+			if (mFirstSetTickCount) {
+				mTickIndex = 0;
+				if (mListener != null) {
+					mListener.onIndexChangeListener(this, mTickIndex);
+				}
+			}
+
+			if (indexOutOfRange(mTickIndex)) {
+				mTickIndex = 0;
+				if (mListener != null) {
+					mListener.onIndexChangeListener(this, mTickIndex);
+				}
+			}
+
+			createBar();
+			createThumb();
+		} else {
+			throw new IllegalArgumentException(
+					"tickCount less than 2; invalid tickCount.");
+		}
+
 	}
 
 	public float getDefaultWidth() {
@@ -323,7 +399,7 @@ public class CustomerRangeBar extends View {
 
 	}
 
-	public void rangeBarInit(Context context, AttributeSet attrs) {
+	private void rangeBarInit(Context context, AttributeSet attrs) {
 
 		DisplayMetrics metrics = getResources().getDisplayMetrics();
 
@@ -358,12 +434,15 @@ public class CustomerRangeBar extends View {
 								DEFAULT_TICK_CIRCLE_RADIUS_DP, metrics));
 		mTickCount = ta.getInteger(R.styleable.RangeBar_tickCount, 4);
 		mTickIndex = ta.getInteger(R.styleable.RangeBar_tickIndex, 0);
+		mBaseLineColor = ta.getColor(R.styleable.RangeBar_baseLineColor,
+				Color.YELLOW);
 		mTickOuterCircleColor = ta.getColor(
 				R.styleable.RangeBar_tickOuterCircleColor, Color.WHITE);
 		mTickOuterCircleWidth = ta.getDimension(
 				R.styleable.RangeBar_tickOuterCircleWidth, TypedValue
 						.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
 								DEFAULT_TICK_OUTER_CIRCLE_WIDTH_DP, metrics));
+
 		mTickTextAlign = ta.getInteger(R.styleable.RangeBar_tickTextAlign, 3);
 		mTickTextNormalColor = ta.getColor(
 				R.styleable.RangeBar_tickTextNormalColor, Color.BLACK);
@@ -407,6 +486,52 @@ public class CustomerRangeBar extends View {
 		setMeasuredDimension(width, height);
 	}
 
+	@Override
+	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+		// TODO Auto-generated method stub
+		super.onSizeChanged(w, h, oldw, oldh);
+
+		float length = getWidth()
+				- (mThumbCircleRadius + mThumbInnerCircleWidth + mThumbOuterCircleWidth)
+				* 2 - getPaddingLeft() - getPaddingRight();
+
+		mBar = new Bar(getContext(), getWidth(), getPaddingLeft(),
+				getPaddingRight(), mThumbCircleRadius, mThumbInnerCircleWidth,
+				mThumbOuterCircleWidth, mTickCircleRadius,
+				mTickOuterCircleWidth, mBaseLineWeight, mTickTextSize,
+				getFontHeight(), getDp(10), mTickCount, mBaseLineColor,
+				mTickCircleColor, mTickOuterCircleColor, mTickTextNormalColor,
+				mTickTextSelectedColor);
+
+		mThumb = new Thumb(getContext(), getWidth(), getPaddingLeft(),
+				getPaddingRight(), mThumbCircleRadius, mThumbInnerCircleWidth,
+				mThumbOuterCircleWidth, getFontHeight(), getDp(10), mTickCount,
+				mThumbCircleColor, mThumbInnerCircleColor,
+				mThumbOuterCircleColor);
+
+		mThumb.setX(getPaddingLeft() + mThumbCircleRadius
+				+ mThumbInnerCircleWidth + mThumbOuterCircleWidth
+				+ (mTickIndex / (float) (mTickCount - 1)) * length);
+
+		final int newTickIndex = mBar.getNearestTickIndex(mThumb);
+
+		if (newTickIndex != mTickIndex) {
+			mTickIndex = newTickIndex;
+			if (mListener != null) {
+				mListener.onIndexChangeListener(this, mTickIndex);
+			}
+		}
+
+	}
+
+	private boolean isValidTickCount(int tickCount) {
+		return (tickCount > 1);
+	}
+
+	private boolean indexOutOfRange(int tickIndex) {
+		return (mTickIndex < 0 || mTickIndex >= mTickCount);
+	}
+
 	/**
 	 * 得到字体所占的高度
 	 * 
@@ -426,9 +551,9 @@ public class CustomerRangeBar extends View {
 	 */
 	private float calculateDefaultHeight() {
 		return getFontHeight()
-				+ (getDp(DEFAULT_THUMB_CIRCLE_RADIUS_DP
-						+ DEFAULT_THUMB_INNER_CIRCLE_WIDTH_DP
-						+ DEFAULT_THUMB_OUTER_CIRCLE_WIDTH_DP)) * 2 + getDp(10);
+				+ (getDp(mThumbCircleRadius
+						+ mThumbInnerCircleWidth
+						+ mThumbOuterCircleWidth)) * 2 + getDp(10);
 
 	}
 
@@ -441,86 +566,124 @@ public class CustomerRangeBar extends View {
 	protected void onDraw(Canvas canvas) {
 		// TODO Auto-generated method stub
 		super.onDraw(canvas);
-		float length = getWidth() - getPaddingLeft() - getPaddingRight() - 2
-				* mThumbCircleRadius - 2 * mThumbInnerCircleWidth - 2
-				* mThumbOuterCircleWidth;
-		float len = length / mTickCount;
+		mBar.draw(canvas, mTickIndex, mData);
+		mThumb.draw(canvas);
+	}
 
-		mThumbOuterCirclePaint = new Paint();
-		mThumbOuterCirclePaint.setDither(true);
-		mThumbOuterCirclePaint.setAntiAlias(true);
-		mThumbOuterCirclePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-		mThumbOuterCirclePaint.setStyle(Paint.Style.FILL);
-		mThumbOuterCirclePaint.setColor(Color.WHITE);
+	private void createBar() {
+		mBar = new Bar(getContext(), getWidth(), getPaddingLeft(),
+				getPaddingRight(), mThumbCircleRadius, mThumbInnerCircleWidth,
+				mThumbOuterCircleWidth, mTickCircleRadius,
+				mTickOuterCircleWidth, mBaseLineWeight, mTickTextSize,
+				getFontHeight(), getDp(10), mTickCount, mBaseLineColor,
+				mTickCircleColor, mTickOuterCircleColor, mTickTextNormalColor,
+				mTickTextSelectedColor);
+		invalidate();
+	}
 
-		mThumbInnerCirclePaint = new Paint();
-		mThumbInnerCirclePaint.setDither(true);
-		mThumbInnerCirclePaint.setAntiAlias(true);
-		mThumbInnerCirclePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-		mThumbInnerCirclePaint.setStyle(Paint.Style.FILL);
-		mThumbInnerCirclePaint.setColor(Color.BLUE);
+	private void createThumb() {
+		mThumb = new Thumb(getContext(), getWidth(), getPaddingLeft(),
+				getPaddingRight(), mThumbCircleRadius, mThumbInnerCircleWidth,
+				mThumbOuterCircleWidth, getFontHeight(), getDp(10), mTickCount,
+				mThumbCircleColor, mThumbInnerCircleColor,
+				mThumbOuterCircleColor);
 
-		mThumbCirclePaint = new Paint();
-		mThumbCirclePaint.setDither(true);
-		mThumbCirclePaint.setAntiAlias(true);
-		mThumbCirclePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-		mThumbCirclePaint.setStyle(Paint.Style.FILL);
-		mThumbCirclePaint.setColor(Color.RED);
+		invalidate();
+	}
 
-		mTickTextPaint = new Paint();
-		mTickTextPaint.setDither(true);
-		mTickTextPaint.setAntiAlias(true);
-		mTickTextPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-		mTickTextPaint.setColor(Color.WHITE);
-		mTickTextPaint.setTextSize(mTickTextSize);
-
-		mBaseLinePaint = new Paint();
-		mBaseLinePaint.setDither(true);
-		mBaseLinePaint.setAntiAlias(true);
-		mBaseLinePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-		mBaseLinePaint.setStyle(Paint.Style.FILL);
-		mBaseLinePaint.setColor(Color.WHITE);
-		mBaseLinePaint.setStrokeWidth(mBaseLineWeight);
-
-		for (int i = 0; i <= mTickCount; i++) {
-			if (i != mTickCount) {
-				canvas.drawLine(i * len + getPaddingLeft() + mThumbCircleRadius
-						+ mThumbInnerCircleWidth + mThumbOuterCircleWidth,
-						getFontHeight() + getDp(10) + mThumbCircleRadius
-								+ mThumbInnerCircleWidth
-								+ mThumbOuterCircleWidth, (i + 1) * len
-								+ getPaddingLeft() + mThumbCircleRadius
-								+ mThumbInnerCircleWidth
-								+ mThumbOuterCircleWidth, getFontHeight()
-								+ getDp(10) + mThumbCircleRadius
-								+ mThumbInnerCircleWidth
-								+ mThumbOuterCircleWidth, mBaseLinePaint);
-			}
-
-			canvas.drawCircle(i * len + getPaddingLeft() + mThumbCircleRadius
-					+ mThumbInnerCircleWidth + mThumbOuterCircleWidth,
-					getFontHeight() + getDp(10) + mThumbCircleRadius
-							+ mThumbInnerCircleWidth + mThumbOuterCircleWidth,
-					mThumbCircleRadius + mThumbInnerCircleWidth
-							+ mThumbOuterCircleWidth, mThumbOuterCirclePaint);
-			canvas.drawCircle(i * len + getPaddingLeft() + mThumbCircleRadius
-					+ mThumbInnerCircleWidth + mThumbOuterCircleWidth,
-					getFontHeight() + getDp(10) + mThumbCircleRadius
-							+ mThumbInnerCircleWidth + mThumbOuterCircleWidth,
-					mThumbCircleRadius + mThumbInnerCircleWidth,
-					mThumbInnerCirclePaint);
-			canvas.drawCircle(i * len + getPaddingLeft() + mThumbCircleRadius
-					+ mThumbInnerCircleWidth + mThumbOuterCircleWidth,
-					getFontHeight() + getDp(10) + mThumbCircleRadius
-							+ mThumbInnerCircleWidth + mThumbOuterCircleWidth,
-					mThumbCircleRadius, mThumbCirclePaint);
-
-			canvas.drawText("b", i * len + getPaddingLeft()
-					+ mThumbCircleRadius + mThumbInnerCircleWidth
-					+ mThumbOuterCircleWidth, getFontHeight() + getDp(5),
-					mTickTextPaint);
-
+	private void pressThumb(Thumb thumb) {
+		if (mFirstSetTickCount == true) {
+			mFirstSetTickCount = false;
 		}
 
+		thumb.press();
+		invalidate();
+	}
+
+	private void releaseThumb(Thumb thumb) {
+		final float nearestTickX = mBar.getNearestTickCoordinate(thumb);
+		thumb.setX(nearestTickX);
+		thumb.release();
+		invalidate();
+	}
+
+	private void moveThumb(Thumb thumb, float x) {
+		if (x < mBar.getLeftX() || x > mBar.getRightX()) {
+			// Do nothing.
+		} else {
+			thumb.setX(x);
+			invalidate();
+		}
+	}
+
+	private void onActionDown(float x, float y) {
+		if (!mThumb.isPressed() && mThumb.isInTargetZone(x, y)) {
+			pressThumb(mThumb);
+		}
+	}
+
+	private void onActionUp(float x, float y) {
+		if (mThumb.isPressed()) {
+			releaseThumb(mThumb);
+		} else {
+			mThumb.setX(x);
+			releaseThumb(mThumb);
+
+			final int newTickIndex = mBar.getNearestTickIndex(mThumb);
+			if (newTickIndex != mTickIndex) {
+				mTickIndex = newTickIndex;
+
+				if (mListener != null) {
+					mListener.onIndexChangeListener(this, mTickIndex);
+				}
+			}
+
+		}
+	}
+
+	private void onActionMove(float x) {
+		if (mThumb.isPressed()) {
+			moveThumb(mThumb, x);
+		}
+
+		final int newTickIndex = mBar.getNearestTickIndex(mThumb);
+		if (newTickIndex != mTickIndex) {
+			mTickIndex = newTickIndex;
+
+			if (mListener != null) {
+				mListener.onIndexChangeListener(this, mTickIndex);
+			}
+		}
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		// TODO Auto-generated method stub
+		if (!isEnabled()) {
+			return false;
+		}
+
+		switch (event.getAction()) {
+		case MotionEvent.ACTION_DOWN:
+			onActionDown(event.getX(), event.getY());
+			return true;
+		case MotionEvent.ACTION_UP:
+		case MotionEvent.ACTION_CANCEL:
+			onActionUp(event.getX(), event.getY());
+			this.getParent().requestDisallowInterceptTouchEvent(false);
+			return true;
+
+		case MotionEvent.ACTION_MOVE:
+			onActionMove(event.getX());
+			break;
+		default:
+			return false;
+		}
+		return super.onTouchEvent(event);
+	}
+
+	private static interface OnRangeBarChangeListener {
+		public void onIndexChangeListener(CustomerRangeBar customerRangerBar,
+				int thumbIndex);
 	}
 }

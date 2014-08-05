@@ -8,6 +8,7 @@
         <attr name="thumbInnerCircleColor" format="reference|color" />
         <attr name="thumbCircleRadius" format="dimension" />
         <attr name="thumbCircleColor" format="reference|color" />
+        <attr name="baseLineColor" format="reference|color"/>
         <attr name="tickCircleRadius" format="dimension" />
         <attr name="tickCircleColor" format="reference|color" />
         <attr name="tickOuterCircleWidth" format="dimension" />
