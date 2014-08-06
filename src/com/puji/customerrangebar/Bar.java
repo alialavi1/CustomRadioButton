@@ -42,7 +42,7 @@ public class Bar {
 			float tickInnerCircleWidth, float baseLineWeight,
 			float tickTextSize, float fontHeight, float spaing, int tickCount,
 			int baseLineColor, int tickCircleColor, int tickInnerCircleColor,
-			int tickNormalTextColor,int tickSelectdTextColor) {
+			int tickNormalTextColor,int tickSelectdTextColor,Align align) {
 
 		mTickCircleRadius = tickCircleRadius;
 		mTickInnerCircleWidth = tickInnerCircleWidth;
@@ -74,7 +74,7 @@ public class Bar {
 		mTickTextPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
 		mTickTextPaint.setColor(tickNormalTextColor);
 		mTickTextPaint.setTextSize(mTickTextSize);
-		mTickTextPaint.setTextAlign(Align.CENTER);
+		mTickTextPaint.setTextAlign(align);
 
 		mTickCirclePaint = new Paint();
 		mTickCirclePaint.setDither(true);

@@ -7,6 +7,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.graphics.Paint.FontMetrics;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -399,6 +400,12 @@ public class CustomerRangeBar extends View {
 
 	}
 
+	/**
+	 * 初始化View的属性
+	 * 
+	 * @param context
+	 * @param attrs
+	 */
 	private void rangeBarInit(Context context, AttributeSet attrs) {
 
 		DisplayMetrics metrics = getResources().getDisplayMetrics();
@@ -443,7 +450,7 @@ public class CustomerRangeBar extends View {
 						.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
 								DEFAULT_TICK_OUTER_CIRCLE_WIDTH_DP, metrics));
 
-		mTickTextAlign = ta.getInteger(R.styleable.RangeBar_tickTextAlign, 3);
+		mTickTextAlign = ta.getInteger(R.styleable.RangeBar_tickTextAlign, 1);
 		mTickTextNormalColor = ta.getColor(
 				R.styleable.RangeBar_tickTextNormalColor, Color.BLACK);
 		mTickTextSelectedColor = ta.getColor(
@@ -501,7 +508,7 @@ public class CustomerRangeBar extends View {
 				mTickOuterCircleWidth, mBaseLineWeight, mTickTextSize,
 				getFontHeight(), getDp(10), mTickCount, mBaseLineColor,
 				mTickCircleColor, mTickOuterCircleColor, mTickTextNormalColor,
-				mTickTextSelectedColor);
+				mTickTextSelectedColor, Align.values()[mTickTextAlign]);
 
 		mThumb = new Thumb(getContext(), getWidth(), getPaddingLeft(),
 				getPaddingRight(), mThumbCircleRadius, mThumbInnerCircleWidth,
@@ -524,10 +531,22 @@ public class CustomerRangeBar extends View {
 
 	}
 
+	/**
+	 * 判断设置的刻度值是否有效
+	 * 
+	 * @param tickCount
+	 * @return
+	 */
 	private boolean isValidTickCount(int tickCount) {
 		return (tickCount > 1);
 	}
 
+	/**
+	 * 判断当前被选中的刻度是否在有效范围
+	 * 
+	 * @param tickIndex
+	 * @return
+	 */
 	private boolean indexOutOfRange(int tickIndex) {
 		return (mTickIndex < 0 || mTickIndex >= mTickCount);
 	}
@@ -551,12 +570,17 @@ public class CustomerRangeBar extends View {
 	 */
 	private float calculateDefaultHeight() {
 		return getFontHeight()
-				+ (getDp(mThumbCircleRadius
-						+ mThumbInnerCircleWidth
+				+ (getDp(mThumbCircleRadius + mThumbInnerCircleWidth
 						+ mThumbOuterCircleWidth)) * 2 + getDp(10);
 
 	}
 
+	/**
+	 * 得到以dp为单位的值
+	 * 
+	 * @param value
+	 * @return
+	 */
 	private float getDp(float value) {
 		return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value,
 				getResources().getDisplayMetrics());
@@ -577,8 +601,9 @@ public class CustomerRangeBar extends View {
 				mTickOuterCircleWidth, mBaseLineWeight, mTickTextSize,
 				getFontHeight(), getDp(10), mTickCount, mBaseLineColor,
 				mTickCircleColor, mTickOuterCircleColor, mTickTextNormalColor,
-				mTickTextSelectedColor);
+				mTickTextSelectedColor, Align.values()[mTickTextAlign]);
 		invalidate();
+
 	}
 
 	private void createThumb() {

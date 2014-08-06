@@ -19,8 +19,8 @@
         custom:tickCircleColor="#87CEEB"
         custom:tickTextNormalColor="#080808"
         custom:tickTextSelectedColor="#006400"
+        custom:tickTextAlign="center"
         android:background="#aaaaaa"
-      
         />
 
 </RelativeLayout>
