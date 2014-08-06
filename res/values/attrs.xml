@@ -24,6 +24,8 @@
         <attr name="tickTextSize" format="dimension" />
         <attr name="tickTextNormalColor" format="reference|color" />
         <attr name="tickTextSelectedColor" format="reference|color" />
+        <attr name="paddingLeft" format="dimension"/>
+        <attr name="paddingRight" format="dimension"/>
     </declare-styleable>
 
 </resources>

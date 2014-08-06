@@ -161,6 +161,9 @@ public class CustomerRangeBar extends View {
 
 	private int mBaseLineColor;
 
+	private float mPaddingLeft;
+	private float mPaddingRight;
+
 	public void setData(List<String> data) {
 		mData = data;
 
@@ -458,6 +461,10 @@ public class CustomerRangeBar extends View {
 		mTickTextSize = ta.getDimension(R.styleable.RangeBar_tickTextSize,
 				TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
 						DEAFULT_TICK_TEXT_SIZE_SP, metrics));
+		mPaddingLeft = ta.getDimension(R.styleable.RangeBar_paddingLeft,
+				getDp(10));
+		mPaddingRight = ta.getDimension(R.styleable.RangeBar_paddingRight,
+				getDp(10));
 		ta.recycle();
 
 	}
@@ -488,7 +495,6 @@ public class CustomerRangeBar extends View {
 			height = Math.round(calculateDefaultHeight() + 0.5f);
 		}
 
-		width = width + getPaddingLeft() + getPaddingRight();
 		height = height + getPaddingTop() + getPaddingBottom();
 		setMeasuredDimension(width, height);
 	}
@@ -500,23 +506,23 @@ public class CustomerRangeBar extends View {
 
 		float length = getWidth()
 				- (mThumbCircleRadius + mThumbInnerCircleWidth + mThumbOuterCircleWidth)
-				* 2 - getPaddingLeft() - getPaddingRight();
+				* 2 - mPaddingLeft - mPaddingRight;
 
-		mBar = new Bar(getContext(), getWidth(), getPaddingLeft(),
-				getPaddingRight(), mThumbCircleRadius, mThumbInnerCircleWidth,
+		mBar = new Bar(getContext(), getWidth(), mPaddingLeft, mPaddingRight,
+				mThumbCircleRadius, mThumbInnerCircleWidth,
 				mThumbOuterCircleWidth, mTickCircleRadius,
 				mTickOuterCircleWidth, mBaseLineWeight, mTickTextSize,
 				getFontHeight(), getDp(10), mTickCount, mBaseLineColor,
 				mTickCircleColor, mTickOuterCircleColor, mTickTextNormalColor,
 				mTickTextSelectedColor, Align.values()[mTickTextAlign]);
 
-		mThumb = new Thumb(getContext(), getWidth(), getPaddingLeft(),
-				getPaddingRight(), mThumbCircleRadius, mThumbInnerCircleWidth,
+		mThumb = new Thumb(getContext(), getWidth(), mPaddingLeft,
+				mPaddingRight, mThumbCircleRadius, mThumbInnerCircleWidth,
 				mThumbOuterCircleWidth, getFontHeight(), getDp(10), mTickCount,
 				mThumbCircleColor, mThumbInnerCircleColor,
 				mThumbOuterCircleColor);
 
-		mThumb.setX(getPaddingLeft() + mThumbCircleRadius
+		mThumb.setX(mPaddingLeft + mThumbCircleRadius
 				+ mThumbInnerCircleWidth + mThumbOuterCircleWidth
 				+ (mTickIndex / (float) (mTickCount - 1)) * length);
 
@@ -595,8 +601,8 @@ public class CustomerRangeBar extends View {
 	}
 
 	private void createBar() {
-		mBar = new Bar(getContext(), getWidth(), getPaddingLeft(),
-				getPaddingRight(), mThumbCircleRadius, mThumbInnerCircleWidth,
+		mBar = new Bar(getContext(), getWidth(), mPaddingLeft,
+				mPaddingRight, mThumbCircleRadius, mThumbInnerCircleWidth,
 				mThumbOuterCircleWidth, mTickCircleRadius,
 				mTickOuterCircleWidth, mBaseLineWeight, mTickTextSize,
 				getFontHeight(), getDp(10), mTickCount, mBaseLineColor,
@@ -607,8 +613,8 @@ public class CustomerRangeBar extends View {
 	}
 
 	private void createThumb() {
-		mThumb = new Thumb(getContext(), getWidth(), getPaddingLeft(),
-				getPaddingRight(), mThumbCircleRadius, mThumbInnerCircleWidth,
+		mThumb = new Thumb(getContext(), getWidth(), mPaddingLeft,
+				mPaddingRight, mThumbCircleRadius, mThumbInnerCircleWidth,
 				mThumbOuterCircleWidth, getFontHeight(), getDp(10), mTickCount,
 				mThumbCircleColor, mThumbInnerCircleColor,
 				mThumbOuterCircleColor);

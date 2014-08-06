@@ -20,6 +20,8 @@
         custom:tickTextNormalColor="#080808"
         custom:tickTextSelectedColor="#006400"
         custom:tickTextAlign="center"
+        custom:paddingLeft="20dp"
+        custom:paddingRight="20dp"
         android:background="#aaaaaa"
         />
 
